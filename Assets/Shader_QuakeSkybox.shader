@@ -6,9 +6,11 @@ Shader "Retro/QuakeSkybox"
 	Properties
 	{
 		_MainTex("Texture", 2D) = "white" {}
-		_MainTexSpeed("Texture Speed", Float) = 2
+		_MainTexSpeedX("Texture Speed X", Float) = 2
+		_MainTexSpeedY("Texture Speed Y", Float) = 0
 		_SecondaryTex("Secondary Texture", 2D) = "white" {}
-		_SecondaryTexSpeed("Texture Speed", Float) = 5
+		_SecondaryTexSpeedX("Texture Speed X", Float) = 5
+		_SecondaryTexSpeedY("Texture Speed Y", Float) = 0
 		_CutOff("Cutoff", Range(0, 1)) = 0
 		_SphereSize("Sphere Size", Range(0, 10)) = 5
 	}
@@ -49,10 +51,12 @@ Shader "Retro/QuakeSkybox"
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			float _MainTexSpeed;
+			float _MainTexSpeedX;
+			float _MainTexSpeedY;
 			sampler2D _SecondaryTex;
 			float4 _SecondaryTex_ST;
-			float _SecondaryTexSpeed;
+			float _SecondaryTexSpeedX;
+			float _SecondaryTexSpeedY;
 			float _CutOff;
 			float _SphereSize;
 
@@ -60,10 +64,11 @@ Shader "Retro/QuakeSkybox"
 			{
 				float3 dir = normalize(float3(i.worldView.x / _SphereSize, i.worldView.y, i.worldView.z / _SphereSize));
 				float2 secondaryTexUV = float2(dir.z, dir.x);
-					
+
 				secondaryTexUV.x *= _SecondaryTex_ST.x;
 				secondaryTexUV.y *= _SecondaryTex_ST.y;
-				secondaryTexUV.x += _Time * _SecondaryTexSpeed;
+				secondaryTexUV.x += _Time * _SecondaryTexSpeedX;
+				secondaryTexUV.y += _Time * _SecondaryTexSpeedY;
 
 				fixed4 col = tex2D(_SecondaryTex, secondaryTexUV);
 
@@ -72,7 +77,8 @@ Shader "Retro/QuakeSkybox"
 
 					mainTexUV.x *= _MainTex_ST.x;
 					mainTexUV.y *= _MainTex_ST.y;
-					mainTexUV.x += _Time * _MainTexSpeed;
+					mainTexUV.x += _Time * _MainTexSpeedX;
+					mainTexUV.y += _Time * _MainTexSpeedY;
 
 					col = tex2D(_MainTex, mainTexUV);
 				}
